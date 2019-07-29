@@ -9,7 +9,6 @@ from datetime import date
 import calendar as cal
 import math
 
-
 class Caracteristicas(object):
     def __init__(self, dataFlow, nPosto=None, dateStart=None, dateEnd=None):
         self.nPosto = nPosto.upper()
@@ -25,6 +24,23 @@ class Caracteristicas(object):
             self.dataFlow = dataFlow.loc[:self.dateEnd]
         else:
             self.dataFlow = dataFlow
+
+
+    def mean_month(self):
+        years = self.dataFlow.groupby(pd.Grouper(freq='AS-%s' % self.mesInicioAnoHidrologico()[1]))
+        data = pd.DataFrame()
+        for year in years:
+            aux = year[1].groupby(pd.Grouper(freq='M')).mean()
+            df = pd.DataFrame({year[0].year: {cal.month_name[i.month]: aux.XINGO[i] for i in aux.XINGO.index}})
+            data = data.combine_first(df)
+        meanMonths = data.T
+
+        mediaMes = pd.DataFrame(meanMonths.mean(), columns=['Means'])
+        stdMes = pd.DataFrame(meanMonths.(), columns=['Coeff. of Var.'])
+        mediaMes = mediaMes.combine_first(stdMes)
+        print(mediaMes)
+        #data = pd.DataFrame(data=mediaMes.values(), index=mediaMes.keys(), columns=['Means'])
+        #return data
 
     # Ano hidrologico
     def mesInicioAnoHidrologico(self):
