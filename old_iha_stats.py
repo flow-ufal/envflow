@@ -11,24 +11,24 @@ import math
 
 
 class Caracteristicas(object):
-    def __init__(self, dadosVazao, nPosto=None, dataInicio=None, dataFim=None):
+    def __init__(self, dataFlow, nPosto=None, dateStart=None, dateEnd=None):
         self.nPosto = nPosto.upper()
-        if dataInicio != None and dataFim != None:
-            self.dataInicio = pd.to_datetime(dataInicio, dayfirst=True)
-            self.dataFim = pd.to_datetime(dataFim, dayfirst=True)
-            self.dadosVazao = dadosVazao.loc[self.dataInicio:self.dataFim]
-        elif dataInicio != None:
-            self.dataInicio = pd.to_datetime(dataInicio, dayfirst=True)
-            self.dadosVazao = dadosVazao.loc[self.dataInicio:]
-        elif dataFim != None:
-            self.dataFim = pd.to_datetime(dataFim, dayfirst=True)
-            self.dadosVazao = dadosVazao.loc[:self.dataFim]
+        if dateStart != None and dateEnd != None:
+            self.dateStart = pd.to_datetime(dateStart, dayfirst=True)
+            self.dateEnd = pd.to_datetime(dateEnd, dayfirst=True)
+            self.dataFlow = dataFlow.loc[self.dateStart:self.dateEnd]
+        elif dateStart != None:
+            self.dateStart = pd.to_datetime(dateStart, dayfirst=True)
+            self.dataFlow = dataFlow.loc[self.dateStart:]
+        elif dateEnd != None:
+            self.dateEnd = pd.to_datetime(dateEnd, dayfirst=True)
+            self.dataFlow = dataFlow.loc[:self.dateEnd]
         else:
-            self.dadosVazao = dadosVazao
+            self.dataFlow = dataFlow
 
     # Ano hidrologico
     def mesInicioAnoHidrologico(self):
-        mediaMes = [self.dadosVazao[self.nPosto].loc[self.dadosVazao.index.month == i].mean()
+        mediaMes = [self.dataFlow[self.nPosto].loc[self.dataFlow.index.month == i].mean()
                     for i in range(1, 13)]
         mesHidro = 1 + mediaMes.index(min(mediaMes))
         mesHidroAbr = cal.month_abbr[mesHidro]
@@ -39,7 +39,7 @@ class Caracteristicas(object):
         aux = []
         listaInicio = []
         listaFim = []
-        ganttBool = self.dadosVazao.isnull()[self.nPosto]
+        ganttBool = self.dataFlow.isnull()[self.nPosto]
         for i in ganttBool.index:
             if ~ganttBool.loc[i]:
                 aux.append(i)
@@ -54,14 +54,14 @@ class Caracteristicas(object):
         return pd.DataFrame(dic)
 
     def parcialEventoPercentil(self, quartilLimiar, tipoEvento):
-        limiar = self.dadosVazao[self.nPosto].quantile(quartilLimiar)
+        limiar = self.dataFlow[self.nPosto].quantile(quartilLimiar)
         if tipoEvento == 'cheia':
-            eventoL = self.dadosVazao[self.nPosto].isin(
-                self.dadosVazao.loc[self.dadosVazao[self.nPosto] >= limiar, self.nPosto])
+            eventoL = self.dataFlow[self.nPosto].isin(
+                self.dataFlow.loc[self.dataFlow[self.nPosto] >= limiar, self.nPosto])
             return eventoL, limiar
         elif tipoEvento == 'estiagem':
-            eventoL = self.dadosVazao[self.nPosto].isin(
-                self.dadosVazao.loc[self.dadosVazao[self.nPosto] <= limiar, self.nPosto])
+            eventoL = self.dataFlow[self.nPosto].isin(
+                self.dataFlow.loc[self.dataFlow[self.nPosto] <= limiar, self.nPosto])
             return eventoL, limiar
         else:
             return 'Evento erro!'
@@ -69,36 +69,36 @@ class Caracteristicas(object):
     def parcialEventoMediaMaxima(self, tipoEvento):
         limiar = self.maxAnual()[self.nPosto].mean()
         if tipoEvento == 'cheia':
-            eventoL = self.dadosVazao[self.nPosto].isin(
-                self.dadosVazao.loc[self.dadosVazao[self.nPosto] >= limiar, self.nPosto])
+            eventoL = self.dataFlow[self.nPosto].isin(
+                self.dataFlow.loc[self.dataFlow[self.nPosto] >= limiar, self.nPosto])
             return eventoL, limiar
         elif tipoEvento == 'estiagem':
-            eventoL = self.dadosVazao[self.nPosto].isin(
-                self.dadosVazao.loc[self.dadosVazao[self.nPosto] <= limiar, self.nPosto])
+            eventoL = self.dataFlow[self.nPosto].isin(
+                self.dataFlow.loc[self.dataFlow[self.nPosto] <= limiar, self.nPosto])
             return eventoL, limiar
         else:
             return 'Evento erro!'
 
     def parcialEventoPorAno(self, limiar, tipoEvento):
         if tipoEvento == 'cheia':
-            eventoL = self.dadosVazao[self.nPosto].isin(
-                self.dadosVazao.loc[self.dadosVazao[self.nPosto] >= limiar, self.nPosto])
+            eventoL = self.dataFlow[self.nPosto].isin(
+                self.dataFlow.loc[self.dataFlow[self.nPosto] >= limiar, self.nPosto])
             return eventoL
         elif tipoEvento == 'estiagem':
-            eventoL = self.dadosVazao[self.nPosto].isin(
-                self.dadosVazao.loc[self.dadosVazao[self.nPosto] <= limiar, self.nPosto])
+            eventoL = self.dataFlow[self.nPosto].isin(
+                self.dataFlow.loc[self.dataFlow[self.nPosto] <= limiar, self.nPosto])
             return eventoL
         else:
             return 'Evento erro!'
 
     def parcialPorAno(self, nEventos, tipoEvento):
-        nAnos = self.dadosVazao[self.nPosto].index.year[-1] - \
-            self.dadosVazao[self.nPosto].index.year[0]
-        l = self.dadosVazao[self.nPosto].quantile(0.7)
+        nAnos = self.dataFlow[self.nPosto].index.year[-1] - \
+                self.dataFlow[self.nPosto].index.year[0]
+        l = self.dataFlow[self.nPosto].quantile(0.7)
         #vazao = -np.sort(-self.dadosVazao.loc[self.dadosVazao[self.nPosto] <= l, self.nPosto])
         q = 0.8
         while q != 0:
-            limiar = self.dadosVazao[self.nPosto].quantile(q)
+            limiar = self.dataFlow[self.nPosto].quantile(q)
             print(limiar)
             eventosL = self.parcialEventoPorAno(limiar, tipoEvento)
             picos = self.eventos_picos(eventosL, tipoEvento)
@@ -108,7 +108,7 @@ class Caracteristicas(object):
             q -= 0.005
 
     def maxAnual(self):
-        gDados = self.dadosVazao.groupby(pd.Grouper(
+        gDados = self.dataFlow.groupby(pd.Grouper(
             freq='AS-%s' % self.mesInicioAnoHidrologico()[1]))
         maxVazao = gDados[self.nPosto].max().values
         dataVazao = gDados[self.nPosto].idxmax().values
@@ -119,10 +119,10 @@ class Caracteristicas(object):
     def daysJulian(self, reducao):
 
         if reducao.title() == "Maxima":
-            data = pd.DatetimeIndex(self.dadosVazao.groupby(pd.Grouper(
+            data = pd.DatetimeIndex(self.dataFlow.groupby(pd.Grouper(
                 freq='AS-%s' % self.mesInicioAnoHidrologico()[1])).idxmax()[self.nPosto].values)
         elif reducao.title() == "Minima":
-            data = pd.DatetimeIndex(self.dadosVazao.groupby(pd.Grouper(
+            data = pd.DatetimeIndex(self.dataFlow.groupby(pd.Grouper(
                 freq='AS-%s' % self.mesInicioAnoHidrologico()[1])).idxmin()[self.nPosto].values)
 
         dfDayJulian = pd.DataFrame(
@@ -132,13 +132,13 @@ class Caracteristicas(object):
         return dfDayJulian, dayJulianMedia, dayJulianCv
 
     def __criterioMediana(self, dados, index, tipoEvento):
-        median = self.dadosVazao[self.nPosto].median()
+        median = self.dataFlow[self.nPosto].median()
         if tipoEvento == 'cheia':
-            eventos = self.dadosVazao[self.nPosto].isin(
-                self.dadosVazao.loc[self.dadosVazao[self.nPosto] >= median, self.nPosto])
+            eventos = self.dataFlow[self.nPosto].isin(
+                self.dataFlow.loc[self.dataFlow[self.nPosto] >= median, self.nPosto])
         elif tipoEvento == 'estiagem':
-            eventos = self.dadosVazao[self.nPosto].isin(
-                self.dadosVazao.loc[self.dadosVazao[self.nPosto] <= median, self.nPosto])
+            eventos = self.dataFlow[self.nPosto].isin(
+                self.dataFlow.loc[self.dataFlow[self.nPosto] <= median, self.nPosto])
 
         if len(dados['Vazao']) > 0 and (not eventos.loc[index] or
                                         index == pd.to_datetime("%s0831" % index.year)):
@@ -147,13 +147,13 @@ class Caracteristicas(object):
             return False
 
     def __criterioMedia(self, dados, index, tipoEvento):
-        mean = self.dadosVazao[self.nPosto].mean()
+        mean = self.dataFlow[self.nPosto].mean()
         if tipoEvento == 'cheia':
-            eventos = self.dadosVazao[self.nPosto].isin(
-                self.dadosVazao.loc[self.dadosVazao[self.nPosto] >= mean, self.nPosto])
+            eventos = self.dataFlow[self.nPosto].isin(
+                self.dataFlow.loc[self.dataFlow[self.nPosto] >= mean, self.nPosto])
         elif tipoEvento == 'estiagem':
-            eventos = self.dadosVazao[self.nPosto].isin(
-                self.dadosVazao.loc[self.dadosVazao[self.nPosto] <= mean, self.nPosto])
+            eventos = self.dataFlow[self.nPosto].isin(
+                self.dataFlow.loc[self.dataFlow[self.nPosto] <= mean, self.nPosto])
 
         if len(dados['Vazao']) > 0 and (not eventos.loc[index] or
                                         index == pd.to_datetime("%s0831" % index.year)):
@@ -203,14 +203,14 @@ class Caracteristicas(object):
             for i in serie.index:
                 if serie.loc[i]:
                     dados['Vazao'].append(
-                        self.dadosVazao.loc[iAntes, self.nPosto])
+                        self.dataFlow.loc[iAntes, self.nPosto])
                     dados['Data'].append(iAntes)
                     lowLimiar = True
                 elif lowLimiar:
                     dados['Vazao'].append(
-                        self.dadosVazao.loc[iAntes, self.nPosto])
+                        self.dataFlow.loc[iAntes, self.nPosto])
                     dados['Data'].append(iAntes)
-                    dados['Vazao'].append(self.dadosVazao.loc[i, self.nPosto])
+                    dados['Vazao'].append(self.dataFlow.loc[i, self.nPosto])
                     dados['Data'].append(i)
                     lowLimiar = False
 
@@ -242,7 +242,7 @@ class Caracteristicas(object):
 
         print(self.test_autocorrelacao(eventosPicos)[0])
 
-        grupoEventos = self.dadosVazao[self.nPosto].groupby(
+        grupoEventos = self.dataFlow[self.nPosto].groupby(
             pd.Grouper(freq='AS-%s' % self.mesInicioAnoHidrologico()[1]))
         dic = {'Ano': [], 'Duracao': [], 'nPulsos': []}
         for i, serie in grupoEventos:
@@ -298,19 +298,19 @@ class Caracteristicas(object):
             values = []
             for i in serie.loc[serie.values == True].index:
                 if d1 != None:
-                    if self.ChecksTypeRate(self.dadosVazao.loc[d1, self.nPosto],
-                                           self.dadosVazao.loc[i, self.nPosto], tipo):
+                    if self.ChecksTypeRate(self.dataFlow.loc[d1, self.nPosto],
+                                           self.dataFlow.loc[i, self.nPosto], tipo):
                         boo = True
                         rate['Data1'].append(d1)
                         rate['Data2'].append(i)
                         rate['Vazao1'].append(
-                            self.dadosVazao.loc[d1, self.nPosto])
+                            self.dataFlow.loc[d1, self.nPosto])
                         rate['Vazao2'].append(
-                            self.dadosVazao.loc[i, self.nPosto])
+                            self.dataFlow.loc[i, self.nPosto])
                         rate['Taxa'].append(
-                            self.dadosVazao.loc[i, self.nPosto] - self.dadosVazao.loc[d1, self.nPosto])
+                            self.dataFlow.loc[i, self.nPosto] - self.dataFlow.loc[d1, self.nPosto])
                         values.append(
-                            self.dadosVazao.loc[i, self.nPosto] - self.dadosVazao.loc[d1, self.nPosto])
+                            self.dataFlow.loc[i, self.nPosto] - self.dataFlow.loc[d1, self.nPosto])
                     else:
                         if boo:
                             mean = np.mean(values)
@@ -336,6 +336,6 @@ class Caracteristicas(object):
         return ratesDf, riseDf, riseMed, riseCv, nMedia, nCv
 
     def precipitacao_anual(self):
-        dados_anual = self.dadosVazao.groupby(
+        dados_anual = self.dataFlow.groupby(
             pd.Grouper(freq='A')).sum().to_period()
         return dados_anual
