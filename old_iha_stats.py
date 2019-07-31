@@ -35,10 +35,27 @@ class Caracteristicas(object):
             data = data.combine_first(df)
         meanMonths = data.T
 
-        mediaMes = pd.DataFrame(pd.to_numeric(meanMonths.mean(), downcast='integer'), columns=['Means'])
+        mediaMes = pd.DataFrame(meanMonths.mean(), columns=['Means'])
         stdMes = pd.DataFrame(meanMonths.std()/meanMonths.mean(), columns=['Coeff. of Var.'])
         mediaMes = mediaMes.combine_first(stdMes)
         return mediaMes
+
+    def moving_averages(self):
+        mov_aver_data = pd.DataFrame()
+        for i in [1, 3, 7, 30, 90]:
+            movs_max = self.dataFlow.rolling(window=i).mean().groupby(pd.Grouper(freq='A')).max()
+            movs_min = self.dataFlow.rolling(window=i).mean().groupby(pd.Grouper(freq='A')).min()
+            years = movs_max.index.year
+            df1 = pd.DataFrame(pd.Series(data=movs_min.XINGO.values, name='%s-day minimum' % i, index=years))
+            df2 = pd.DataFrame(pd.Series(data=movs_max.XINGO.values, name='%s-day maximum' % i, index=years))
+            mov_aver_data = mov_aver_data.combine_first(df1)
+            mov_aver_data = mov_aver_data.combine_first(df2)
+
+        media = pd.DataFrame(mov_aver_data.mean(), columns=['Means'])
+        cv = pd.DataFrame(mov_aver_data.std()/mov_aver_data.mean(), columns=['Coeff. of Var.'])
+
+        data = media.combine_first(cv)
+        return data
 
     # Ano hidrologico
     def mesInicioAnoHidrologico(self):

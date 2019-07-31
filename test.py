@@ -24,11 +24,16 @@ class Test_IHA(TestCase):
         data2 = self.read().mean_month()
 
         for i in data.index:
-            self.assertEqual(int(data.Means[i]), int(round(data2.Means[i], 0)))
-            self.assertEqual(int(data['Coeff. of Var.'][i]), int(round(data2['Coeff. of Var.'][i], 4)))
+            self.assertEqual('{:=4.0f}'.format(data.Means[i]), '{:=4.0f}'.format(data2.Means[i]))
+            self.assertEqual('{:=4.0f}'.format(data['Coeff. of Var.'][i]), '{:=4.0f}'.format(data2['Coeff. of Var.'][i]))
 
     def test_moving_averages(self):
         data = self.read_iha('Group2.csv')
+        data2 = self.read().moving_averages()
+        print(data2)
+        for i in data.index:
+            self.assertEqual('{:=4.0f}'.format(data.Means[i]), '{:=4.0f}'.format(data2.Means[i]))
+            self.assertEqual('{:=4.0f}'.format(data['Coeff. of Var.'][i]), '{:=4.0f}'.format(data2['Coeff. of Var.'][i]))
 
     def test_year_water(self):
         year_water = self.read().mesInicioAnoHidrologico()
