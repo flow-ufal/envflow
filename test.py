@@ -16,14 +16,16 @@ class Test_IHA(TestCase):
     @staticmethod
     def read_iha(file):
         path = os.path.abspath(os.path.join('test_data', file))
-        data = pd.read_csv(path, ';')
+        data = pd.read_csv(path, ';', index_col=0)
         return data
 
     def test_mean_month(self):
         data = self.read_iha('Group1.csv')
         data2 = self.read().mean_month()
 
-        print(data2)
+        for i in data.index:
+            self.assertEqual(int(data.Means[i]), int(round(data2.Means[i], 0)))
+            self.assertEqual(int(data['Coeff. of Var.'][i]), int(round(data2['Coeff. of Var.'][i], 4)))
 
     def test_moving_averages(self):
         data = self.read_iha('Group2.csv')

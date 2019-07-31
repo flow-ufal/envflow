@@ -1,13 +1,13 @@
-Variable;Means;Coeff. of Var.
-September;1085;0,5238
-October;1154;0,515
-November;1785;0,4671
-December;3264;0,3728
-January;4648;0,3123
-February;4933;0,4293
-March;4935;0,5428
-April;4062;0,4606
-May;2466;0,5137
-June;1612;0,3733
-July;1323;0,3057
-August;1156;0,294
+;Means;Coeff. of Var.
+January;4688;0.3013
+February;4976;0.4204
+March;4978;0.5352
+April;4095;0.4535
+May;2480;0.511
+June;1616;0.3738
+July;1324;0.3073
+August;1155;0.2959
+September;1033;0.2913
+October;1103;0.3255
+November;1741;0.4206
+December;3237;0.3703
