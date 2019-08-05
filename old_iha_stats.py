@@ -151,13 +151,12 @@ class Caracteristicas(object):
 
         if reducao.title() == "Maxima":
             data = pd.DatetimeIndex(self.dataFlow.groupby(pd.Grouper(
-                freq='AS-%s' % self.mesInicioAnoHidrologico()[1])).idxmax()[self.nPosto].values)
+                freq='A')).idxmax()[self.nPosto].values)
         elif reducao.title() == "Minima":
             data = pd.DatetimeIndex(self.dataFlow.groupby(pd.Grouper(
                 freq='AS-%s' % self.mesInicioAnoHidrologico()[1])).idxmin()[self.nPosto].values)
 
-        dfDayJulian = pd.DataFrame(
-            list(map(int, data.strftime("%j"))), index=data)
+        dfDayJulian = pd.DataFrame(list(map(int, data.strftime("%j"))), index=data)
         dayJulianMedia = dfDayJulian.mean()[0]
         dayJulianCv = dfDayJulian.std()[0]/dayJulianMedia
         return dfDayJulian, dayJulianMedia, dayJulianCv
@@ -178,7 +177,7 @@ class Caracteristicas(object):
             return False
 
     def __criterioMedia(self, dados, index, tipoEvento):
-        mean = self.dataFlow[self.nPosto].mean()
+        mean = self.dataFlow[self.nPosto].quantile(0.75)
         if tipoEvento == 'cheia':
             eventos = self.dataFlow[self.nPosto].isin(
                 self.dataFlow.loc[self.dataFlow[self.nPosto] >= mean, self.nPosto])
@@ -223,8 +222,7 @@ class Caracteristicas(object):
         return True, r1, r2
 
     def eventos_picos(self, eventosL, tipoEvento, dias=1):
-        grupoEventos = eventosL.groupby(pd.Grouper(
-            freq='AS-%s' % self.mesInicioAnoHidrologico()[1]))
+        grupoEventos = eventosL.groupby(pd.Grouper(freq='A'))
         max_evento = {'Data': [], 'Ano': [], 'Vazao': [],
                      'Inicio': [], 'Fim': [], 'Duracao': []}
         iAntes = eventosL.index[1]
@@ -263,28 +261,23 @@ class Caracteristicas(object):
                     dados = {'Data': [], 'Vazao': []}
                 """
                 iAntes = i
-        return pd.DataFrame(max_evento,
-                            columns=['Ano', 'Duracao', 'Inicio', 'Fim', 'Vazao'],
-                            index=max_evento['Data'])
+        return pd.DataFrame(max_evento, columns=['Ano', 'Duracao', 'Inicio', 'Fim', 'Vazao'], index=max_evento['Data'])
 
     def pulsosDuracao(self, tipoEvento='cheia'):
-        eventosPicos, limiar = self.parcialPorAno(2.3, tipoEvento)
-        #eventosPicos = self.eventos_picos(eventosL, tipoEvento)
+        eventosL, limiar = self.parcialEventoPercentil(quartilLimiar=0.75, tipoEvento=tipoEvento)
+        #eventosPicos, limiar = self.parcialPorAno(2.3, tipoEvento)
+        eventosPicos = self.eventos_picos(eventosL, tipoEvento)
 
-        print(self.test_autocorrelacao(eventosPicos)[0])
+        #print(self.test_autocorrelacao(eventosPicos)[0])
 
-        grupoEventos = self.dataFlow[self.nPosto].groupby(
-            pd.Grouper(freq='AS-%s' % self.mesInicioAnoHidrologico()[1]))
+        grupoEventos = self.dataFlow[self.nPosto].groupby(pd.Grouper(freq='A'))
         dic = {'Ano': [], 'Duracao': [], 'nPulsos': []}
         for i, serie in grupoEventos:
             dic['Ano'].append(i.year)
-            dic['Duracao'].append(
-                eventosPicos.Duracao.loc[eventosPicos.Ano == i.year].mean())
-            dic['nPulsos'].append(
-                len(eventosPicos.loc[eventosPicos.Ano == i.year]))
+            dic['Duracao'].append(eventosPicos.Duracao.loc[eventosPicos.Ano == i.year].mean())
+            dic['nPulsos'].append(len(eventosPicos.loc[eventosPicos.Ano == i.year]))
         evento_por_ano = pd.DataFrame(dic)
-        evento_por_ano.set_value(
-            evento_por_ano.loc[evento_por_ano.Duracao.isnull()].index, 'Duracao', 0)
+        evento_por_ano.set_value(evento_por_ano.loc[evento_por_ano.Duracao.isnull()].index, 'Duracao', 0)
         durMedia = evento_por_ano.Duracao.mean()
         durCv = evento_por_ano.Duracao.std()/durMedia
         nPulsoMedio = evento_por_ano.nPulsos.mean()

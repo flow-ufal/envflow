@@ -41,10 +41,16 @@ class Test_IHA(TestCase):
         self.assertEqual((9, 'SEP'), year_water, 'Year Water: %s, %s' % (9, 'SEP'))
 
     def test_days_julian(self):
+        dfDayJ, dayJMean, dayJCv = self.read().daysJulian(reducao="Maxima")
         data = self.read_iha('Group3.csv')
+        print(data)
+        print(dfDayJ, dayJMean, dayJCv)
 
     def test_pulse(self):
+        picos, eventos_por_ano, dM, dCv, pM, pCv, limiar = self.read().pulsosDuracao(tipoEvento='cheia')
         data = self.read_iha('Group4.csv')
+        print(limiar)
+        print(eventos_por_ano)
 
     def test_rise_fall(self):
         data = self.read_iha('Group5.csv')
