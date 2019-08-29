@@ -40,7 +40,7 @@
                     // zoom to point & add it to map
                     var name = '<h6><a href="{%  url 'index' %}">{{ station.samplingfeaturename }}</a></h6>'
                     var la = '<br>Lat: {{ station.featuregeometrywkt.x }}</br>'
-                    var lo = '<br>Lon: {{ station.featuregeometrywkt.x }}</br>'
+                    var lo = '<br>Lon: {{ station.featuregeometrywkt.y }}</br>'
                     L.marker([lat, lon]).bindPopup(name+la+lo).openPopup().addTo(map);
                 {% endfor %}
             }
