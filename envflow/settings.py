@@ -37,6 +37,10 @@ ALLOWED_HOSTS = []
 
 SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000
+
+BASE_URL = ''
+CUSTOM_TEMPLATE_PATH = '/{}{}/'.format(BASE_URL, APP_NAME)
 # Application definition
 
 INSTALLED_APPS = [
@@ -46,9 +50,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.gis',
 
     #myapps
     'iha',
+    'core',
+
+    #app install
+    'widget_tweaks',
+    'leaflet',
 
     #ODM2Admin
     'odm2admin',
@@ -133,6 +143,22 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LEAFLET_CONFIG = {
+    #'SPATIAL_EXTENT': (-30, -7, -39, -9),
+    'DEFAULT_CENTER': (-9.664004, -35.739083),
+    'DEFAULT_ZOOM': 8,
+    'MIN_ZOOM': 2,
+    'MAX_ZOOM': 18,
+    }
+
+#auth
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'index'
+LOGOUT_URL = 'logout'
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'core.backends.ModelBackend',
+)
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
