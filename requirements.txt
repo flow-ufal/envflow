@@ -26,7 +26,8 @@ lmoments3==1.0.4
 numpy==1.17.1
 oauthlib==3.1.0
 odfpy==1.4.0
-odm2admin==0.1.2.dev0
+dist/odm2admin-0.1.2.dev0.tar.gz
+dist/hydrocomp-0.1.1.tar.gz
 openpyxl==2.6.3
 pandas==0.25.1
 pkg-resources==0.0.0
