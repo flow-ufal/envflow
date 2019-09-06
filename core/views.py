@@ -15,7 +15,7 @@ class IndexView(CreateView):
     def get(self, request, *args, **kwargs):
 
         featureaction = Featureactions.objects.all()
-        print(featureaction[0].action.method)
+        print(featureaction[2].action.actiondescription)
         context = {'feactureaction': featureaction}
 
         return render(request, self.template_name, context)
@@ -26,7 +26,7 @@ class IndexView(CreateView):
 
 class ResultsView(CreateView):
 
-    template_name = 'hydrogram_clean.html'
+    template_name = 'results.html'
 
     def get(self, request, *args, **kwargs):
 
