@@ -12059,3 +12059,10 @@ footer.sticky-footer .copyright {
 body.sidebar-toggled footer.sticky-footer {
   width: 100%;
 }
+
+#myDiv {
+  margin: 0 auto;
+  border: 1px solid black;
+  height: 85vh;
+  min-height: 300px;
+}

@@ -33,7 +33,6 @@
         </style>
         <script type="text/javascript">
             function map_init(map, options) {
-
                 {% for station in feactureaction %}
                     {{ station.samplingfeatureid.featuregeometrywkt.x }}
                     // get point lat and lon
@@ -41,7 +40,7 @@
                     var lon = "{{ station.samplingfeatureid.featuregeometrywkt.y }}";
                     // zoom to point & add it to map
                     var name = '<h6>{{ station.samplingfeatureid.samplingfeaturename }}</h6>'
-                    var method = '<h6><a href="{%  url 'results' station.feactureactionid %}">{{ station.action.method.methodname }}</a></h6>'
+                    var method = '<h6><a href="{%  url 'results' station.featureactionid %}">{{ station.action.method.methodname }}</a></h6>'
                     var la = '<br>Lat: {{ station.samplingfeatureid.featuregeometrywkt.x }}</br>'
                     var lo = '<br>Lon: {{ station.samplingfeatureid.featuregeometrywkt.y }}</br>'
                     L.marker([lat, lon]).bindPopup(name+method+la+lo).openPopup().addTo(map);

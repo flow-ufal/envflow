@@ -15,6 +15,7 @@ class IndexView(CreateView):
     def get(self, request, *args, **kwargs):
 
         featureaction = Featureactions.objects.all()
+        print(featureaction[0].action.method)
         context = {'feactureaction': featureaction}
 
         return render(request, self.template_name, context)
@@ -25,7 +26,7 @@ class IndexView(CreateView):
 
 class ResultsView(CreateView):
 
-    template_name = 'results.html'
+    template_name = 'hydrogram_clean.html'
 
     def get(self, request, *args, **kwargs):
 
@@ -41,9 +42,10 @@ class ResultsView(CreateView):
             dic[station].append(i[0])
         data_flow = pd.DataFrame(dic, index=dic['Data'], columns=[station])
         flow = Flow(data=data_flow, source=station)
-        print(flow)
-        data, fig = flow.plot_hydrogram()
-        hydrogram = opy.plot(data, auto_open=False, output_type='div')
+
+        data, fig = flow.plot_hydrogram(width=None, height=None)
+
+        hydrogram = opy.plot(data,  include_plotlyjs=True, output_type='div', auto_open=False)
 
         context = {"featureaction": featureaction,
                    'hydrogram': hydrogram}
