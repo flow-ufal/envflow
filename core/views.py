@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView, CreateView
-from odm2admin.models import Samplingfeatures, Timeseriesresultvalues, Featureactions
+from odm2admin.models import Samplingfeatures, Timeseriesresultvalues, Featureactions, Actions
 import pandas as pd
 from hydrocomp.series.flow import Flow
 import plotly.offline as opy
@@ -14,9 +14,11 @@ class IndexView(CreateView):
 
     def get(self, request, *args, **kwargs):
 
-        featureaction = Featureactions.objects.all()
-        print(featureaction[2].action.actiondescription)
-        context = {'feactureaction': featureaction}
+        featureaction = Samplingfeatures.objects.all()
+        features = []
+        for i in featureaction:
+            features.append(Featureactions.objects.filter(samplingfeatureid=i.samplingfeatureid))
+        context = {'feactures': features}
 
         return render(request, self.template_name, context)
 

@@ -33,16 +33,18 @@
         </style>
         <script type="text/javascript">
             function map_init(map, options) {
-                {% for station in feactureaction %}
-                    {{ station.samplingfeatureid.featuregeometrywkt.x }}
-                    // get point lat and lon
-                    var lat = "{{ station.samplingfeatureid.featuregeometrywkt.x }}";
-                    var lon = "{{ station.samplingfeatureid.featuregeometrywkt.y }}";
-                    // zoom to point & add it to map
-                    var name = '<h6>{{ station.samplingfeatureid.samplingfeaturename }}</h6>'
-                    var method = '<h6><a href="{%  url 'results' station.featureactionid %}">{{ station.action.method.methodname }}</a></h6>'
-                    var la = '<br>Lat: {{ station.samplingfeatureid.featuregeometrywkt.x }}</br>'
-                    var lo = '<br>Lon: {{ station.samplingfeatureid.featuregeometrywkt.y }}</br>'
+                {% for feacture in feactures %}
+                    var method = ''
+                    {% for feac in feacture %}
+                        // get point lat and lon
+                        var lat = "{{ feac.samplingfeatureid.featuregeometrywkt.x }}";
+                        var lon = "{{ feac.samplingfeatureid.featuregeometrywkt.y }}";
+                        // zoom to point & add it to map
+                        var name = '<h6>{{ feac.samplingfeatureid.samplingfeaturename }}</h6>'
+                        var la = '<br>Lat: {{ feac.samplingfeatureid.featuregeometrywkt.x }}</br>'
+                        var lo = '<br>Lon: {{ feac.samplingfeatureid.featuregeometrywkt.y }}</br>'
+                        var method = method + '<h6><a href="{%  url 'results' feac.featureactionid %}">{{ feac.action.method.methodname }}</a></h6>\n'
+                    {% endfor %}
                     L.marker([lat, lon]).bindPopup(name+method+la+lo).openPopup().addTo(map);
                 {% endfor %}
             }
