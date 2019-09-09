@@ -1,6 +1,9 @@
-from django.shortcuts import render
-from django.views.generic import TemplateView, CreateView
-from odm2admin.models import Samplingfeatures, Timeseriesresultvalues, Featureactions, Actions
+from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, FormView
+from django.contrib.gis.geos import Point
+from .forms import SamplingFeaturesForm
+from odm2admin.models import Samplingfeatures, Timeseriesresultvalues, Featureactions, CvSamplingfeaturetype
 import pandas as pd
 from hydrocomp.series.flow import Flow
 import plotly.offline as opy
@@ -14,11 +17,11 @@ class IndexView(CreateView):
 
     def get(self, request, *args, **kwargs):
 
-        featureaction = Samplingfeatures.objects.all()
-        features = []
-        for i in featureaction:
-            features.append(Featureactions.objects.filter(samplingfeatureid=i.samplingfeatureid))
-        context = {'feactures': features}
+        samplingfeatures = Samplingfeatures.objects.all()
+        features = Featureactions.objects.all()
+
+        context = {'samplingfeatures': samplingfeatures,
+                   'features': features}
 
         return render(request, self.template_name, context)
 
@@ -45,7 +48,7 @@ class ResultsView(CreateView):
         data_flow = pd.DataFrame(dic, index=dic['Data'], columns=[station])
         flow = Flow(data=data_flow, source=station)
 
-        data, fig = flow.plot_hydrogram(width=None, height=None)
+        data, fig = flow.hydrogram()
 
         hydrogram = opy.plot(data,  include_plotlyjs=True, output_type='div', auto_open=False)
 
@@ -62,5 +65,29 @@ class ResultsView(CreateView):
         return render(request, self.template_name, context)
 
 
+class FeatureActionsView(FormView):
+
+    model = Samplingfeatures
+    form_class = SamplingFeaturesForm
+    template_name = 'feature.html'
+    success_url = reverse_lazy('index')
+
+    def post(self, request, *args, **kwargs):
+        post = request.POST
+        name = post['samplingfeaturename']
+        code = post['samplingfeaturecode']
+        feature_type = CvSamplingfeaturetype.objects.get(pk=post['sampling_feature_type'])
+        lat = post['lat']
+        lon = post['lon']
+        point = Point(float(lat), float(lon))
+
+        sampling = Samplingfeatures(samplingfeaturecode=code, samplingfeaturename=name, featuregeometry=point,
+                                    sampling_feature_type=feature_type)
+
+        sampling.save()
+        return redirect(self.success_url)
+
+
 index = IndexView.as_view()
 results = ResultsView.as_view()
+featureaction = FeatureActionsView.as_view()
