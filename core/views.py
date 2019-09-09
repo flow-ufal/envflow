@@ -65,7 +65,7 @@ class ResultsView(CreateView):
         return render(request, self.template_name, context)
 
 
-class FeatureActionsView(FormView):
+class SamplingFeaturesView(FormView):
 
     model = Samplingfeatures
     form_class = SamplingFeaturesForm
@@ -90,4 +90,4 @@ class FeatureActionsView(FormView):
 
 index = IndexView.as_view()
 results = ResultsView.as_view()
-featureaction = FeatureActionsView.as_view()
+samplingfeatures = SamplingFeaturesView.as_view()
