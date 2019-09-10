@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, FormView
 from django.contrib.gis.geos import Point
+
+from core.forms import TimeResultsSeriesValuesForm
 from .forms import SamplingFeaturesForm
 from odm2admin.models import Samplingfeatures, Timeseriesresultvalues, Featureactions, CvSamplingfeaturetype
 import pandas as pd
@@ -88,6 +90,15 @@ class SamplingFeaturesView(FormView):
         return redirect(self.success_url)
 
 
+class TimeResultsSeriesValuesView(FormView):
+
+    model = Timeseriesresultvalues
+    form_class = TimeResultsSeriesValuesForm
+    template_name = 'feature.html'
+    success_url = reverse_lazy('index')
+
+
 index = IndexView.as_view()
 results = ResultsView.as_view()
 samplingfeatures = SamplingFeaturesView.as_view()
+time_serie_values = TimeResultsSeriesValuesView.as_view()
