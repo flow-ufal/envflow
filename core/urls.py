@@ -11,5 +11,6 @@ urlpatterns = [
     path('login', LoginView.as_view(template_name='login.html'), name='login'),
     path('logout', LogoutView.as_view(template_name='index.html'), name='logout'),
     path('station', samplingfeatures, name='station'),
-    path('station/<code>/add_data', time_serie_values, name='add_data')
+    path('station/<code>/add_data', time_serie_values, name='add_values'),
+    path('add_data', time_serie_values, name='add')
 ]

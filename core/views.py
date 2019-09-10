@@ -71,7 +71,7 @@ class SamplingFeaturesView(FormView):
 
     model = Samplingfeatures
     form_class = SamplingFeaturesForm
-    template_name = 'feature.html'
+    template_name = 'sampling.html'
     success_url = reverse_lazy('index')
 
     def post(self, request, *args, **kwargs):
@@ -94,7 +94,7 @@ class TimeResultsSeriesValuesView(FormView):
 
     model = Timeseriesresultvalues
     form_class = TimeResultsSeriesValuesForm
-    template_name = 'feature.html'
+    template_name = 'time_serie_values.html'
     success_url = reverse_lazy('index')
 
 

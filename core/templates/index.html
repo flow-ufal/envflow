@@ -43,7 +43,7 @@
                     var lo = '<br>Lon: {{ sampling.featuregeometrywkt.y }}</br>'
 
                     {% if user.is_authenticated %}
-                        var user = '<h6><a class="m-0 font-weight-bold text-primary" href="{% url 'add_data' sampling.samplingfeaturecode %}">Adicionar dados</a></h6>'
+                        var user = '<h6><a class="m-0 font-weight-bold text-primary" href="{% url 'add_values' sampling.samplingfeaturecode %}">Adicionar dados</a></h6>'
                     {% else %}
                         var user = ''
                     {% endif %}
