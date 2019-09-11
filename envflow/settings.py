@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     #myapps
     'iha',
     'core',
+    'user',
 
     #app install
     'widget_tweaks',
