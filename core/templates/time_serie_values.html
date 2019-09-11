@@ -1,5 +1,9 @@
 {% extends "add_data.html" %}
 
 {% block title %}
-    Valor/Série Temporal
+    {% if sampling.samplingfeaturename == None %}
+        Valor/Série Temporal
+    {% else %}
+        Valor/Série Temporal - {{ sampling.samplingfeaturename }}
+    {% endif %}
 {% endblock %}

@@ -1,11 +1,14 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, FormView
 from django.contrib.gis.geos import Point
+from odm2admin.forms import MethodsAdminForm
 
-from core.forms import TimeResultsSeriesValuesForm
-from .forms import SamplingFeaturesForm
-from odm2admin.models import Samplingfeatures, Timeseriesresultvalues, Featureactions, CvSamplingfeaturetype
+from core.forms import UnitsForm, ResultsForm, ProcessingLevelsForm, FeatureAcrionForm, ActionsForm, MethodsForm
+from .forms import SamplingFeaturesForm, TimeResultsSeriesValuesForm, OrganizationsForm, TimeSeriesResultsForm
+from odm2admin.models import Samplingfeatures, Timeseriesresultvalues, Featureactions, CvSamplingfeaturetype, \
+    Organizations, Units, Timeseriesresults, Results, Processinglevels, Actions, Methods
 import pandas as pd
 from hydrocomp.series.flow import Flow
 import plotly.offline as opy
@@ -27,13 +30,10 @@ class IndexView(CreateView):
 
         return render(request, self.template_name, context)
 
-    def post(self, request, *args, **kwargs):
-        print('aqui')
 
+class ResultStationView(CreateView):
 
-class ResultsView(CreateView):
-
-    template_name = 'results.html'
+    template_name = 'result_station.html'
 
     def get(self, request, *args, **kwargs):
 
@@ -67,7 +67,7 @@ class ResultsView(CreateView):
         return render(request, self.template_name, context)
 
 
-class SamplingFeaturesView(FormView):
+class SamplingFeaturesView(LoginRequiredMixin, CreateView):
 
     model = Samplingfeatures
     form_class = SamplingFeaturesForm
@@ -90,15 +90,108 @@ class SamplingFeaturesView(FormView):
         return redirect(self.success_url)
 
 
-class TimeResultsSeriesValuesView(FormView):
+class OrganizationsView(LoginRequiredMixin, CreateView):
+
+    model = Organizations
+    form_class = OrganizationsForm
+    template_name = 'organizations.html'
+    success_url = reverse_lazy('index')
+
+
+class TimeResultsSeriesValuesView(LoginRequiredMixin, CreateView):
 
     model = Timeseriesresultvalues
     form_class = TimeResultsSeriesValuesForm
     template_name = 'time_serie_values.html'
     success_url = reverse_lazy('index')
 
+    def get(self, request, *args, **kwargs):
+
+        context = {}
+        if 'code' in kwargs.keys():
+            sampling = Samplingfeatures.objects.get(samplingfeaturecode=kwargs['code'])
+            context["sampling"] = sampling
+
+        context["form"] = self.form_class
+
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+
+        post = request.POST
+
+        sampling = Samplingfeatures.objects.get(samplingfeaturecode=kwargs['code'])
+
+        context = {"sampling": sampling}
+
+        return render(request, self.template_name, context=context)
+
+
+class UnitsView(LoginRequiredMixin, CreateView):
+
+    model = Units
+    form_class = UnitsForm
+    template_name = 'units.html'
+    success_url = reverse_lazy('index')
+
+
+class TimeSeriesResultView(LoginRequiredMixin, CreateView):
+
+    model = Timeseriesresults
+    form_class = TimeSeriesResultsForm
+    template_name = 'time_serie_result.html'
+    success_url = reverse_lazy('index')
+
+
+class DataResultsView(LoginRequiredMixin, CreateView):
+
+    model = Results
+    template_name = 'data_results.html'
+    form_class = ResultsForm
+    success_url = reverse_lazy('index')
+
+
+class ProcessingLevelsView(LoginRequiredMixin, CreateView):
+
+    model = Processinglevels
+    template_name = 'processing_level.html'
+    form_class = ProcessingLevelsForm
+    success_url = reverse_lazy('index')
+
+
+class FeatureActionView(LoginRequiredMixin, CreateView):
+
+    model = Featureactions
+    form_class = FeatureAcrionForm
+    template_name = 'feature_action.html'
+    success_url = reverse_lazy('index')
+
+
+class ActionView(LoginRequiredMixin, CreateView):
+
+    model = Actions
+    form_class = ActionsForm
+    template_name = 'action.html'
+    success_url = reverse_lazy('index')
+
+
+class MethodsView(LoginRequiredMixin, CreateView):
+
+    model = Methods
+    form_class = MethodsForm
+    template_name = 'method.html'
+    success_url = reverse_lazy('index')
+
 
 index = IndexView.as_view()
-results = ResultsView.as_view()
+result_station = ResultStationView.as_view()
 samplingfeatures = SamplingFeaturesView.as_view()
 time_serie_values = TimeResultsSeriesValuesView.as_view()
+units = UnitsView.as_view()
+time_serie_result = TimeSeriesResultView.as_view()
+data_results = DataResultsView.as_view()
+processing_level = ProcessingLevelsView.as_view()
+feature_action = FeatureActionView.as_view()
+action = ActionView.as_view()
+method = MethodsView.as_view()
+organization = OrganizationsView.as_view()

@@ -50,7 +50,7 @@
                     var method = ''
                     {% for feature in features %}
                         {% if feature.samplingfeatureid.samplingfeaturename == sampling.samplingfeaturename %}
-                            var method = method + '<p><a class="m-0 font-weight-bold text-primary" href="{%  url 'results' feature.featureactionid %}">{{ feature.action.method.methodname }}</a></p>'
+                            var method = method + '<p><a class="m-0 font-weight-bold text-primary" href="{%  url 'result_station' feature.featureactionid %}">{{ feature.action.method.methodname }}</a></p>'
                         {% else %}
                             var method = method + ''
                         {% endif %}

@@ -66,9 +66,16 @@
         </a>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Estação:</h6>
-            <a class="collapse-item" href="{% url 'station' %}">Estação</a>
-            <a class="collapse-item" href="{% url 'add' %}">Dados</a>
+              <h6 class="collapse-header">Adicionar:</h6>
+              <a class="collapse-item" href="{% url 'org' %}">Organização</a>
+              <a class="collapse-item" href="{% url 'station' %}">Estação</a>
+              <a class="collapse-item" href="{% url 'feature_action' %}">Caracteristica de Ação</a>
+              <a class="collapse-item" href="{% url 'action' %}">Ação</a>
+              <a class="collapse-item" href="{% url 'units' %}">Unidade</a>
+              <a class="collapse-item" href="{% url 'processing_level' %}">Nível de Processamento</a>
+              <a class="collapse-item" href="{% url 'data_results' %}">Resultado dos dados</a>
+              <a class="collapse-item" href="{% url 'results_serie_results' %}">Resul. de Série Temporal</a>
+              <a class="collapse-item" href="{% url 'add' %}">Valor de Série Temporal</a>
           </div>
         </div>
       </li>

@@ -24,5 +24,5 @@ urlpatterns = [
     path('', include('core.urls'), name='core'),
     path('lookups/(<channel>[-\w]+)', ajax_select_views.ajax_lookup, name='ajax_lookup'),
     #path(r'^entrar/$', LoginView.as_view(template_name='sign_in.html'), name='login'),
-    #path(r'^sair/$',  LogoutView.as_view(template_name='results.html'), name='logout'),
+    #path(r'^sair/$',  LogoutView.as_view(template_name='result_station.html'), name='logout'),
 ]
