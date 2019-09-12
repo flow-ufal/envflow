@@ -154,12 +154,14 @@ LEAFLET_CONFIG = {
 
 #auth
 LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'index'
+LOGIN_REDIRECT_URL = 'core:index'
 LOGOUT_URL = 'logout'
+AUTH_USER_MODEL = 'user.User'
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'core.backends.ModelBackend',
+    'user.backends.ModelBackend',
 )
+ACCOUNT_SIGNUP_FORM_CLASS = 'user.forms.UserMultiForm'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/

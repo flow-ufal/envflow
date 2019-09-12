@@ -46,7 +46,7 @@ class ResultsForm(ResultsAdminForm):
 
     def link_add(self, label, url):
         return format_html('{} <a href="{}"><img src="/static/admin/img/icon-addlink.svg" alt="Add"></a>'.format(
-            label, reverse(url))
+            label, reverse('core:{}'.format(url)))
         )
 
 
@@ -63,7 +63,7 @@ class FeatureAcrionForm(FeatureactionsAdminForm):
 
     def link_add(self, label, url):
         return format_html('{} <a href="{}"><img src="/static/admin/img/icon-addlink.svg" alt="Add"></a>'.format(
-            label, reverse(url))
+            label, reverse('core:{}'.format(url)))
         )
 
 
@@ -80,7 +80,7 @@ class TimeSeriesResultsForm(TimeseriesresultsAdminForm):
 
     def link_add(self, label, url):
         return format_html('{} <a href="{}"><img src="/static/admin/img/icon-addlink.svg" alt="Add"></a>'.format(
-            label, reverse(url))
+            label, reverse('core:{}'.format(url)))
         )
 
 
@@ -103,7 +103,7 @@ class TimeResultsSeriesValuesForm(TimeseriesresultvaluesAdminForm):
 
     def link_add(self, label, url):
         return format_html('{} <a href="{}"><img src="/static/admin/img/icon-addlink.svg" alt="Add"></a>'.format(
-            label, reverse(url))
+            label, reverse('core:{}'.format(url)))
         )
 
 
@@ -168,7 +168,7 @@ class ActionsForm(ActionsAdminForm):
 
     def link_add(self, label, url):
         return format_html('{} <a href="{}"><img src="/static/admin/img/icon-addlink.svg" alt="Add"></a>'.format(
-            label, reverse(url))
+            label, reverse('core:{}'.format(url)))
         )
 
 
@@ -190,7 +190,7 @@ class MethodsForm(MethodsAdminForm):
 
     def link_add(self, label, url):
         return format_html('{} <a href="{}"><img src="/static/admin/img/icon-addlink.svg" alt="Add"></a>'.format(
-            label, reverse(url))
+            label, reverse('core:{}'.format(url)))
         )
 
 

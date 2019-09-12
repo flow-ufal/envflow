@@ -43,14 +43,14 @@
                     var lo = '<br>Lon: {{ sampling.featuregeometrywkt.y }}</br>'
 
                     {% if user.is_authenticated %}
-                        var user = '<h6><a class="m-0 font-weight-bold text-primary" href="{% url 'add_values' sampling.samplingfeaturecode %}">Adicionar dados</a></h6>'
+                        var user = '<h6><a class="m-0 font-weight-bold text-primary" href="{% url 'core:add_values' sampling.samplingfeaturecode %}">Adicionar dados</a></h6>'
                     {% else %}
                         var user = ''
                     {% endif %}
                     var method = ''
                     {% for feature in features %}
                         {% if feature.samplingfeatureid.samplingfeaturename == sampling.samplingfeaturename %}
-                            var method = method + '<p><a class="m-0 font-weight-bold text-primary" href="{%  url 'result_station' feature.featureactionid %}">{{ feature.action.method.methodname }}</a></p>'
+                            var method = method + '<p><a class="m-0 font-weight-bold text-primary" href="{%  url 'core:result_station' feature.featureactionid %}">{{ feature.action.method.methodname }}</a></p>'
                         {% else %}
                             var method = method + ''
                         {% endif %}

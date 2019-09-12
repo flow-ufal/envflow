@@ -36,7 +36,7 @@
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
       <!-- Sidebar - Brand -->
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{%  url 'index' %}">
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{%  url 'core:index' %}">
         <div class="sidebar-brand-text mx-3">FlowIHA</div>
       </a>
 
@@ -45,7 +45,7 @@
 
       <!-- Nav Item - Dashboard -->
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'results' %}">
+        <a class="nav-link" href="{% url 'iha:results' %}">
           <i class="fas fa-fw fa-tachometer-alt"></i>
           <span>IHA</span></a>
       </li>
@@ -67,15 +67,15 @@
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
               <h6 class="collapse-header">Adicionar:</h6>
-              <a class="collapse-item" href="{% url 'org' %}">Organização</a>
-              <a class="collapse-item" href="{% url 'station' %}">Estação</a>
-              <a class="collapse-item" href="{% url 'feature_action' %}">Caracteristica de Ação</a>
-              <a class="collapse-item" href="{% url 'action' %}">Ação</a>
-              <a class="collapse-item" href="{% url 'units' %}">Unidade</a>
-              <a class="collapse-item" href="{% url 'processing_level' %}">Nível de Processamento</a>
-              <a class="collapse-item" href="{% url 'data_results' %}">Resultado dos dados</a>
-              <a class="collapse-item" href="{% url 'results_serie_results' %}">Resul. de Série Temporal</a>
-              <a class="collapse-item" href="{% url 'add' %}">Valor de Série Temporal</a>
+              <a class="collapse-item" href="{% url 'core:org' %}">Organização</a>
+              <a class="collapse-item" href="{% url 'core:station' %}">Estação</a>
+              <a class="collapse-item" href="{% url 'core:feature_action' %}">Caracteristica de Ação</a>
+              <a class="collapse-item" href="{% url 'core:action' %}">Ação</a>
+              <a class="collapse-item" href="{% url 'core:units' %}">Unidade</a>
+              <a class="collapse-item" href="{% url 'core:processing_level' %}">Nível de Processamento</a>
+              <a class="collapse-item" href="{% url 'core:data_results' %}">Resultado dos dados</a>
+              <a class="collapse-item" href="{% url 'core:results_serie_results' %}">Resul. de Série Temporal</a>
+              <a class="collapse-item" href="{% url 'core:add' %}">Valor de Série Temporal</a>
           </div>
         </div>
       </li>
@@ -114,9 +114,9 @@
         <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Login Screens:</h6>
-            <a class="collapse-item" href="{% url 'login' %}">Login</a>
-            <a class="collapse-item" href="register.html">Register</a>
-            <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
+            <a class="collapse-item" href="{% url 'user:login' %}">Login</a>
+            <a class="collapse-item" href="{% url 'user:register' %}">Register</a>
+            <a class="collapse-item" href="#">Forgot Password</a>
           </div>
         </div>
       </li>
@@ -191,7 +191,7 @@
             <li class="nav-item dropdown no-arrow">
                 {% if user.is_authenticated %}
                   <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ user.first_name }} {{ user.last_name }}</span>
+                    <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ user }} {{ user.last_name }}</span>
                     <img class="img-profile rounded-circle" src="https://scontent.frec10-1.fna.fbcdn.net/v/t1.0-9/46522623_2312444122162281_5696085567549210624_n.jpg?_nc_cat=103&_nc_oc=AQlfVrbDlLp59aillVxmLe4oRbBDf6YQoXftgQAAaVr_qx_vYBkaMjkugmfqpEl0DF4&_nc_ht=scontent.frec10-1.fna&oh=6f854db059bb16ea34176e1c40aab393&oe=5E09EFC0">
                   </a>
                   <!-- Dropdown - User Information -->
@@ -209,13 +209,13 @@
                       Activity Log
                     </a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="{% url 'logout' %}" data-toggle="modal" data-target="#logoutModal">
+                    <a class="dropdown-item" href="{% url 'user:logout' %}" data-toggle="modal" data-target="#logoutModal">
                       <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                       Logout
                     </a>
                   </div>
                 {% else %}
-                    <a class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false" href="{% url 'login' %}">Login</a>
+                    <a class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false" href="{% url 'user:login' %}">Login</a>
                 {% endif %}
             </li>
           </ul>
@@ -265,7 +265,7 @@
         <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <a class="btn btn-primary" href="{% url 'logout' %}">Logout</a>
+          <a class="btn btn-primary" href="{% url 'user:logout' %}">Logout</a>
         </div>
       </div>
     </div>

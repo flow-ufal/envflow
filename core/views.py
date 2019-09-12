@@ -1,9 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
-from django.views.generic import CreateView, FormView
+from django.urls import reverse_lazy, resolve
+from django.views.generic import CreateView
 from django.contrib.gis.geos import Point
-from odm2admin.forms import MethodsAdminForm
 
 from core.forms import UnitsForm, ResultsForm, ProcessingLevelsForm, FeatureAcrionForm, ActionsForm, MethodsForm
 from .forms import SamplingFeaturesForm, TimeResultsSeriesValuesForm, OrganizationsForm, TimeSeriesResultsForm
@@ -72,7 +72,7 @@ class SamplingFeaturesView(LoginRequiredMixin, CreateView):
     model = Samplingfeatures
     form_class = SamplingFeaturesForm
     template_name = 'sampling.html'
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('core:index')
 
     def post(self, request, *args, **kwargs):
         post = request.POST
@@ -132,7 +132,13 @@ class UnitsView(LoginRequiredMixin, CreateView):
     model = Units
     form_class = UnitsForm
     template_name = 'units.html'
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('core:index')
+
+    def get(self, request, *args, **kwargs):
+        url = resolve('/'+'/'.join(request.META.get("HTTP_REFERER").split('/')[3:]))
+        self.success_url = reverse_lazy('{}:{}'.format(url.app_name, url.url_name))
+        context = {'form': self.form_class}
+        return render(request, self.template_name, context=context)
 
 
 class TimeSeriesResultView(LoginRequiredMixin, CreateView):
@@ -140,7 +146,7 @@ class TimeSeriesResultView(LoginRequiredMixin, CreateView):
     model = Timeseriesresults
     form_class = TimeSeriesResultsForm
     template_name = 'time_serie_result.html'
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('core:index')
 
 
 class DataResultsView(LoginRequiredMixin, CreateView):
@@ -148,7 +154,7 @@ class DataResultsView(LoginRequiredMixin, CreateView):
     model = Results
     template_name = 'data_results.html'
     form_class = ResultsForm
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('core:index')
 
 
 class ProcessingLevelsView(LoginRequiredMixin, CreateView):
@@ -156,7 +162,7 @@ class ProcessingLevelsView(LoginRequiredMixin, CreateView):
     model = Processinglevels
     template_name = 'processing_level.html'
     form_class = ProcessingLevelsForm
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('core:index')
 
 
 class FeatureActionView(LoginRequiredMixin, CreateView):
@@ -164,7 +170,7 @@ class FeatureActionView(LoginRequiredMixin, CreateView):
     model = Featureactions
     form_class = FeatureAcrionForm
     template_name = 'feature_action.html'
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('core:index')
 
 
 class ActionView(LoginRequiredMixin, CreateView):
@@ -172,7 +178,7 @@ class ActionView(LoginRequiredMixin, CreateView):
     model = Actions
     form_class = ActionsForm
     template_name = 'action.html'
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('core:index')
 
 
 class MethodsView(LoginRequiredMixin, CreateView):
@@ -180,7 +186,7 @@ class MethodsView(LoginRequiredMixin, CreateView):
     model = Methods
     form_class = MethodsForm
     template_name = 'method.html'
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('core:index')
 
 
 index = IndexView.as_view()
