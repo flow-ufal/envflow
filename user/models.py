@@ -63,7 +63,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         ], help_text='Um nome curto que será usado para identificá-lo de forma'
                 'única na plataforma'
     )
-    profile_picture = models.ImageField(upload_to='user_data/profile_picture', null=True, blank=True)
+    profile_picture = models.ImageField(upload_to='profile_picture', null=True,
+                                        blank=True, default='profile_picture/avatar.png')
     people = models.OneToOneField(People, null=False, on_delete=models.CASCADE, related_name='profile')
     email = models.EmailField('E-mail', unique=True)
     is_staff = models.BooleanField('Equipe', default=False)

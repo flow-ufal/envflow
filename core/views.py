@@ -1,14 +1,19 @@
+import os
+
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseRedirect
+from django.core.files.storage import default_storage
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, resolve
 from django.views.generic import CreateView
 from django.contrib.gis.geos import Point
 
-from core.forms import UnitsForm, ResultsForm, ProcessingLevelsForm, FeatureAcrionForm, ActionsForm, MethodsForm
+from core.forms import UnitsForm, ResultsForm, ProcessingLevelsForm, FeatureAcrionForm, ActionsForm, MethodsForm, \
+    ActionMultiForm, VariablesForm
+from envflow.settings import MEDIA_ROOT
 from .forms import SamplingFeaturesForm, TimeResultsSeriesValuesForm, OrganizationsForm, TimeSeriesResultsForm
 from odm2admin.models import Samplingfeatures, Timeseriesresultvalues, Featureactions, CvSamplingfeaturetype, \
-    Organizations, Units, Timeseriesresults, Results, Processinglevels, Actions, Methods
+    Organizations, Units, Timeseriesresults, Results, Processinglevels, Actions, Methods, CvCensorcode, CvQualitycode, \
+    Variables
 import pandas as pd
 from hydrocomp.series.flow import Flow
 import plotly.offline as opy
@@ -67,7 +72,7 @@ class ResultStationView(CreateView):
         return render(request, self.template_name, context)
 
 
-class SamplingFeaturesView(LoginRequiredMixin, CreateView):
+class AddSamplingFeaturesView(LoginRequiredMixin, CreateView):
 
     model = Samplingfeatures
     form_class = SamplingFeaturesForm
@@ -90,20 +95,20 @@ class SamplingFeaturesView(LoginRequiredMixin, CreateView):
         return redirect(self.success_url)
 
 
-class OrganizationsView(LoginRequiredMixin, CreateView):
+class AddOrganizationsView(LoginRequiredMixin, CreateView):
 
     model = Organizations
     form_class = OrganizationsForm
     template_name = 'organizations.html'
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('core:index')
 
 
-class TimeResultsSeriesValuesView(LoginRequiredMixin, CreateView):
+class AddTimeResultsSeriesValuesView(LoginRequiredMixin, CreateView):
 
     model = Timeseriesresultvalues
     form_class = TimeResultsSeriesValuesForm
     template_name = 'time_serie_values.html'
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('core:index')
 
     def get(self, request, *args, **kwargs):
 
@@ -117,17 +122,48 @@ class TimeResultsSeriesValuesView(LoginRequiredMixin, CreateView):
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-
         post = request.POST
+        file = request.FILES['File']
+        # dados = pd.read_csv(file, index_col=0, names=["Data", "XINGO"],
+        #                    parse_dates=True)
 
         sampling = Samplingfeatures.objects.get(samplingfeaturecode=kwargs['code'])
 
-        context = {"sampling": sampling}
+        path = default_storage.save('data_file/%s' % file.name, file)
+        file = os.path.abspath(os.path.join(MEDIA_ROOT, path))
 
-        return render(request, self.template_name, context=context)
+        result = Timeseriesresults.objects.get(pk=post['resultid'])
+        censor = CvCensorcode.objects.get(pk=post['censorcodecv'])
+        quality = CvQualitycode.objects.get(pk=post['qualitycodecv'])
+        units_time = Units.objects.get(pk=post['timeaggregationintervalunitsid'])
+        time_inter = post['timeaggregationinterval']
+        value_utc = post['valuedatetimeutcoffset']
+
+        source = 'ANA'
+
+        station = sampling.samplingfeaturename
+        print(station.upper())
+
+        dados = Flow(path=file, source=source.upper(), station=station.upper(), consistence=2)
+        default_storage.delete(path)
+        dados.data = dados.data.dropna()
+        time_serie_result_list = []
+        print(dados.data)
+
+        for i in dados.data.index:
+            obj_ts = Timeseriesresultvalues(resultid=result, censorcodecv=censor,
+                                            qualitycodecv=quality, valuedatetimeutcoffset=value_utc,
+                                            timeaggregationinterval=time_inter,
+                                            timeaggregationintervalunitsid=units_time,
+                                            valuedatetime=i.to_datetime(),
+                                            datavalue=float(dados.data[dados.data.columns.values[0]][i]))
+
+            time_serie_result_list.append(obj_ts)
+        Timeseriesresultvalues.objects.bulk_create(time_serie_result_list)
+        return redirect(self.success_url)
 
 
-class UnitsView(LoginRequiredMixin, CreateView):
+class AddUnitsView(LoginRequiredMixin, CreateView):
 
     model = Units
     form_class = UnitsForm
@@ -141,7 +177,7 @@ class UnitsView(LoginRequiredMixin, CreateView):
         return render(request, self.template_name, context=context)
 
 
-class TimeSeriesResultView(LoginRequiredMixin, CreateView):
+class AddTimeSeriesResultView(LoginRequiredMixin, CreateView):
 
     model = Timeseriesresults
     form_class = TimeSeriesResultsForm
@@ -149,7 +185,7 @@ class TimeSeriesResultView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('core:index')
 
 
-class DataResultsView(LoginRequiredMixin, CreateView):
+class AddDataResultsView(LoginRequiredMixin, CreateView):
 
     model = Results
     template_name = 'data_results.html'
@@ -157,7 +193,7 @@ class DataResultsView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('core:index')
 
 
-class ProcessingLevelsView(LoginRequiredMixin, CreateView):
+class AddProcessingLevelsView(LoginRequiredMixin, CreateView):
 
     model = Processinglevels
     template_name = 'processing_level.html'
@@ -165,23 +201,15 @@ class ProcessingLevelsView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('core:index')
 
 
-class FeatureActionView(LoginRequiredMixin, CreateView):
-
-    model = Featureactions
-    form_class = FeatureAcrionForm
-    template_name = 'feature_action.html'
-    success_url = reverse_lazy('core:index')
-
-
-class ActionView(LoginRequiredMixin, CreateView):
+class AddActionView(LoginRequiredMixin, CreateView):
 
     model = Actions
-    form_class = ActionsForm
+    form_class = ActionMultiForm
     template_name = 'action.html'
     success_url = reverse_lazy('core:index')
 
 
-class MethodsView(LoginRequiredMixin, CreateView):
+class AddMethodsView(LoginRequiredMixin, CreateView):
 
     model = Methods
     form_class = MethodsForm
@@ -189,15 +217,22 @@ class MethodsView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('core:index')
 
 
+class AddVariablesView(LoginRequiredMixin, CreateView):
+    model = Variables
+    form_class = VariablesForm
+    template_name = 'variable.html'
+    success_url = reverse_lazy('core:variable')
+
+
 index = IndexView.as_view()
 result_station = ResultStationView.as_view()
-samplingfeatures = SamplingFeaturesView.as_view()
-time_serie_values = TimeResultsSeriesValuesView.as_view()
-units = UnitsView.as_view()
-time_serie_result = TimeSeriesResultView.as_view()
-data_results = DataResultsView.as_view()
-processing_level = ProcessingLevelsView.as_view()
-feature_action = FeatureActionView.as_view()
-action = ActionView.as_view()
-method = MethodsView.as_view()
-organization = OrganizationsView.as_view()
+add_samplingfeatures = AddSamplingFeaturesView.as_view()
+add_time_serie_values = AddTimeResultsSeriesValuesView.as_view()
+add_units = AddUnitsView.as_view()
+add_time_serie_result = AddTimeSeriesResultView.as_view()
+add_data_results = AddDataResultsView.as_view()
+add_processing_level = AddProcessingLevelsView.as_view()
+add_variable = AddVariablesView.as_view()
+add_action = AddActionView.as_view()
+add_method = AddMethodsView.as_view()
+add_organization = AddOrganizationsView.as_view()

@@ -5,38 +5,52 @@
 {% block title %}Registro | {{ block.super }}{% endblock %}
 
 {% block container %}
-<div class="row">
-  <div class="col-md-8 col-md-offset-2">
-      <div class="page-header">
-          <h1>Registro</h1>
-      </div>
-      <form class="form-horizontal" method="post">
-        {% csrf_token %}
-        {% for error in form.non_field_errors %}
-          <div class="alert alert-danger">
-            {{ error }}
+    <!-- Outer Row -->
+    <div class="row justify-content-center">
+
+      <div class="col-xl-10 col-lg-12 col-md-9">
+
+        <div class="card o-hidden border-0 shadow-lg my-5">
+          <div class="card-body p-0">
+            <!-- Nested Row within Card Body -->
+            <div class="row">
+              <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+              <div class="col-lg-6">
+                <div class="p-5">
+                  <div class="text-center">
+                    <h1 class="h4 text-gray-900 mb-4">Registro</h1>
+                  </div>
+                  <form class="user" method="post">
+                    {% csrf_token %}
+                    {% for error in form.non_field_errors %}
+                      <div class="alert alert-danger">
+                        {{ error }}
+                      </div>
+                    {% endfor %}
+                      <fieldset>
+                        {% for field in form %}
+                            <div class="form-group">
+                              {% render_field field class="form-control form-control-user" placeholder=field.label %}
+                              {% for error in field.errors %}
+                                <span class="help-block">{{ error }}</span>
+                              {% endfor %}
+                            </div>
+                        {% endfor %}
+
+                        <div class="form-group">
+                              <button type="submit" class="btn btn-primary btn-user btn-block">Registrar</button>
+                          </div>
+                      </fieldset>
+                  </form>
+                  <hr>
+                </div>
+              </div>
+            </div>
           </div>
-        {% endfor %}
-          <fieldset>
-            {% for field in form %}
-              <div class="form-group">
-                <label for="{{ field.auto_id }}"
-                class="col-md-3 control-label">{{ field.label }}</label>
-                <div class="col-md-9">
-                  {{ field|add_class:'form-control' }}
-                  {% for error in field.errors %}
-                    <span class="help-block">{{ error }}</span>
-                  {% endfor %}
-                </div>
-              </div>
-            {% endfor %}
-              <div class="form-group">
-                <div class="col-md-9 col-md-offset-3">
-                  <button type="submit" class="btn btn-primary">Registrar</button>
-                </div>
-              </div>
-          </fieldset>
-      </form>
-  </div>
-</div>
+        </div>
+
+      </div>
+
+    </div>
 {% endblock %}
+

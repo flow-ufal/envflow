@@ -1,13 +1,20 @@
+from betterforms.multiform import MultiModelForm
 from django import forms
 from ajax_select import make_ajax_field
 from django.urls import reverse
 from django.utils.html import format_html
 from odm2admin.forms import OrganizationsAdminForm, TimeseriesresultvaluesAdminForm, UnitsAdminForm, \
     TimeseriesresultsAdminForm, ResultsAdminForm, ProcessingLevelsAdminForm, FeatureactionsAdminForm, ActionsAdminForm, \
-    MethodsAdminForm, ActionByAdminForm
+    MethodsAdminForm, ActionByAdminForm, VariablesAdminForm
 from odm2admin.models import (Results, Samplingfeatures, Featureactions,
                               Timeseriesresults, Timeseriesresultvalues, Organizations, Units, Processinglevels,
-                              Actions, Methods, Actionby)
+                              Actions, Methods, Actionby, Variables)
+
+
+def link_add(label, url):
+    return format_html('{} <a href="{}"><img src="/static/admin/img/icon-addlink.svg" alt="Add"></a>'.format(
+        label, reverse('{}'.format(url)))
+    )
 
 
 class SamplingFeaturesForm(forms.ModelForm):
@@ -22,7 +29,6 @@ class SamplingFeaturesForm(forms.ModelForm):
         super(SamplingFeaturesForm, self).__init__(*args, **kwargs)
         self.fields['samplingfeaturecode'].label = 'Código da Estação'
         self.fields['sampling_feature_type'].label = 'Tipo de característica de amostragem'
-        #self.fields['samplingfeaturename'].label = 'Nome da Estação'
 
     class Meta:
         model = Samplingfeatures
@@ -34,20 +40,18 @@ class ResultsForm(ResultsAdminForm):
 
     def __init__(self, *args, **kwargs):
         super(ResultsForm, self).__init__(*args, **kwargs)
-        self.fields['featureactionid'].label = 'Ação'
+        self.fields['featureactionid'].label = link_add('Ação', url='core:action')
         self.fields['valuecount'].label = 'Quantidade de valores registrado'
-        self.fields['processing_level'].label = self.link_add('Nível de processamento', 'processing_level')
-        self.fields['unitsid'].label = self.link_add('Unidade', 'units')
+        self.fields['processing_level'].label = link_add('Nível de processamento', 'core:processing_level')
+        self.fields['unitsid'].label = link_add('Unidade', 'core:units')
         self.fields['result_type'].label = 'Tipo'
+        self.fields['variableid'].label = link_add('Variável', url='core:variable')
+        self.fields['sampledmediumcv'].label = 'Meio Amostral'
 
     class Meta:
         model = Results
-        fields = ['featureactionid', 'valuecount', 'processing_level', 'result_type', 'unitsid']
-
-    def link_add(self, label, url):
-        return format_html('{} <a href="{}"><img src="/static/admin/img/icon-addlink.svg" alt="Add"></a>'.format(
-            label, reverse('core:{}'.format(url)))
-        )
+        fields = ['featureactionid', 'valuecount', 'processing_level', 'result_type', 'unitsid', 'variableid',
+                  'sampledmediumcv']
 
 
 class FeatureAcrionForm(FeatureactionsAdminForm):
@@ -55,16 +59,10 @@ class FeatureAcrionForm(FeatureactionsAdminForm):
     def __init__(self, *args, **kwargs):
         super(FeatureAcrionForm, self).__init__(*args, **kwargs)
         self.fields['samplingfeatureid'].label = 'Estação'
-        self.fields['action'].label = self.link_add('Ação', 'action')
 
     class Meta:
         model = Featureactions
-        fields = '__all__'
-
-    def link_add(self, label, url):
-        return format_html('{} <a href="{}"><img src="/static/admin/img/icon-addlink.svg" alt="Add"></a>'.format(
-            label, reverse('core:{}'.format(url)))
-        )
+        fields = ['samplingfeatureid']
 
 
 class TimeSeriesResultsForm(TimeseriesresultsAdminForm):
@@ -72,39 +70,29 @@ class TimeSeriesResultsForm(TimeseriesresultsAdminForm):
     def __init__(self, *args, **kwargs):
         super(TimeSeriesResultsForm, self).__init__(*args, **kwargs)
         self.fields['aggregationstatisticcv'].label = 'Agregação Estatística'
-        self.fields['resultid'].label = self.link_add('Resultado dos dados', 'data_results')
+        self.fields['resultid'].label = link_add('Resultado dos dados', 'core:data_results')
 
     class Meta:
         model = Timeseriesresults
         fields = ['aggregationstatisticcv', 'resultid']
-
-    def link_add(self, label, url):
-        return format_html('{} <a href="{}"><img src="/static/admin/img/icon-addlink.svg" alt="Add"></a>'.format(
-            label, reverse('core:{}'.format(url)))
-        )
 
 
 class TimeResultsSeriesValuesForm(TimeseriesresultvaluesAdminForm):
 
     def __init__(self, *args, **kwargs):
         super(TimeResultsSeriesValuesForm, self).__init__(*args, **kwargs)
-        self.fields['resultid'].label = self.link_add('Time série', 'results_serie_results')
+        self.fields['resultid'].label = link_add('Time série', 'core:results_serie_results')
         self.fields['valuedatetimeutcoffset'].label = 'Value UTC'
         self.fields['censorcodecv'].label = 'Sensor'
         self.fields['qualitycodecv'].label = 'Qualidade'
         self.fields['timeaggregationinterval'].label = 'Intervalo de Tempo'
-        self.fields['timeaggregationintervalunitsid'].label = self.link_add('Unidade de Tempo', 'units')
+        self.fields['timeaggregationintervalunitsid'].label = link_add('Unidade de Tempo', 'core:units')
         self.fields['File'] = forms.FileField()
 
     class Meta:
         model = Timeseriesresultvalues
         exclude = ['datavalue', 'valuedatetime']
         ordering = ['resultid', 'valuedatetimeutcoffset', 'censorcodecv', 'qualitycodecv', 'File']
-
-    def link_add(self, label, url):
-        return format_html('{} <a href="{}"><img src="/static/admin/img/icon-addlink.svg" alt="Add"></a>'.format(
-            label, reverse('core:{}'.format(url)))
-        )
 
 
 class OrganizationsForm(OrganizationsAdminForm):
@@ -154,7 +142,7 @@ class ActionsForm(ActionsAdminForm):
     def __init__(self, *args, **kwargs):
         super(ActionsForm, self).__init__(*args, **kwargs)
         self.fields['actiondescription'].label = 'Descrição'
-        self.fields['method'].label = self.link_add('Método', url='method')
+        self.fields['method'].label = link_add('Método', url='core:method')
 
     class Meta:
         model = Actions
@@ -166,18 +154,13 @@ class ActionsForm(ActionsAdminForm):
             'actiondescription': 'Descrição'
         }
 
-    def link_add(self, label, url):
-        return format_html('{} <a href="{}"><img src="/static/admin/img/icon-addlink.svg" alt="Add"></a>'.format(
-            label, reverse('core:{}'.format(url)))
-        )
-
 
 class MethodsForm(MethodsAdminForm):
 
     def __init__(self, *args, **kwargs):
         super(MethodsForm, self).__init__(*args, **kwargs)
         self.fields['methodtypecv'].label = 'Tipo'
-        self.fields['organizationid'].label = self.link_add('Organização', 'org')
+        self.fields['organizationid'].label = link_add('Organização', 'core:org')
 
     class Meta:
         model = Methods
@@ -188,9 +171,37 @@ class MethodsForm(MethodsAdminForm):
             'methoddescription': 'Descrição',
         }
 
-    def link_add(self, label, url):
-        return format_html('{} <a href="{}"><img src="/static/admin/img/icon-addlink.svg" alt="Add"></a>'.format(
-            label, reverse('core:{}'.format(url)))
-        )
+
+class ActionMultiForm(MultiModelForm):
+
+    form_classes = {
+        'action': ActionsForm,
+        'feature_action': FeatureAcrionForm,
+    }
+
+    def save(self, commit=True):
+        objects = super(ActionMultiForm, self).save(commit=False)
+
+        if commit:
+            action = objects['action']
+            action.save()
+            feature_action = objects['feature_action']
+            feature_action.action = action
+            feature_action.save()
+        return objects
 
 
+class VariablesForm(VariablesAdminForm):
+
+    def __init__(self, *args, **kwargs):
+        super(VariablesForm, self).__init__(*args, **kwargs)
+        self.fields['variable_name'].label = 'Nome'
+        self.fields['variable_type'].label = 'Tipo'
+        self.fields['variablecode'].label = 'Código'
+        self.fields['variabledefinition'].label = 'Definição'
+        self.fields['nodatavalue'].label = 'Não tem dado?'
+        self.fields['speciation'].label = 'Especiação'
+
+    class Meta:
+        model = Variables
+        fields = '__all__'

@@ -153,9 +153,9 @@ LEAFLET_CONFIG = {
     }
 
 #auth
-LOGIN_URL = 'login'
+LOGIN_URL = 'user:login'
 LOGIN_REDIRECT_URL = 'core:index'
-LOGOUT_URL = 'logout'
+LOGOUT_URL = 'user:logout'
 AUTH_USER_MODEL = 'user.User'
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
@@ -181,3 +181,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+MEDIA_URL = '/user_data/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'user_data/')
