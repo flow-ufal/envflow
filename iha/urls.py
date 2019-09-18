@@ -5,6 +5,6 @@ from .views import index, results
 app_name = 'iha'
 
 urlpatterns = [
-    path('', index, name='index'),
-    path('results/', results, name='results'),
+    path('<code>', index, name='index'),
+    path('#', results, name='results'),
 ]

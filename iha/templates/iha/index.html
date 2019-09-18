@@ -3,3 +3,35 @@
 
 {% extends "base.html" %}
 {% load static %}
+
+{% block container %}
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">
+            Estação: {{ sampling.samplingfeaturename }} - {{ featureaction.action.method.methodname }}
+        </h1>
+    </div>
+    <div class="row justify-content-center">
+    <!-- Area Chart -->
+        <div class="col-xl-8 col-lg-12">
+            <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Indicadores de Alteração Hidrológica</h6>
+                </div>
+
+                <div class="card-body">
+                    <div class="chart-area">
+                        <div class="btn-group btn-group-justified" style="width:100%">
+                            <a href="#" class="btn btn-primary btn-user">Análise Simples</a>
+                            <a href="#" class="btn btn-primary btn-user">Comparar dois períodos</a>
+                            <a href="#" class="btn btn-primary btn-user">Comparar duas séries</a>
+                        </div>
+                    </div>
+                    <div class="col-5">
+                        <button type="submit" class="btn btn-primary btn-user btn-block">Executar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

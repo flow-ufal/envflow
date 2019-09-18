@@ -38,9 +38,10 @@
                     var lat = "{{ sampling.featuregeometrywkt.x }}";
                     var lon = "{{ sampling.featuregeometrywkt.y }}";
                     // zoom to point & add it to map
-                    var name = '<h6>{{ sampling.samplingfeaturename }}</h6>'
+                    var name = '<h6 class="text-center">{{ sampling.samplingfeaturename }}</h6>'
                     var la = '<br>Lat: {{ sampling.featuregeometrywkt.x }}</br>'
                     var lo = '<br>Lon: {{ sampling.featuregeometrywkt.y }}</br>'
+                    var iha = '<p><a class="m-0 font-weight-bold text-primary" href={% url 'iha:index' sampling.samplingfeaturecode %}>IHA</a></p>'
 
                     {% if user.is_authenticated %}
                         var user = '<h6><a class="m-0 font-weight-bold text-primary" href="{% url 'core:add_values' sampling.samplingfeaturecode %}">Adicionar dados</a></h6>'
@@ -55,7 +56,7 @@
                             var method = method + ''
                         {% endif %}
                     {% endfor %}
-                    L.marker([lat, lon]).bindPopup(name+user+method+la+lo).openPopup().addTo(map);
+                    L.marker([lat, lon]).bindPopup(name+user+method+iha+la+lo).openPopup().addTo(map);
                 {% endfor %}
             }
         </script>
