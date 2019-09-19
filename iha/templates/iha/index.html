@@ -3,11 +3,12 @@
 
 {% extends "base.html" %}
 {% load static %}
+{% load widget_tweaks %}
 
 {% block container %}
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">
-            Estação: {{ sampling.samplingfeaturename }} - {{ featureaction.action.method.methodname }}
+            Estação: {{ sampling.samplingfeaturename }}
         </h1>
     </div>
     <div class="row justify-content-center">
@@ -18,17 +19,32 @@
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary">Indicadores de Alteração Hidrológica</h6>
                 </div>
-
                 <div class="card-body">
-                    <div class="chart-area">
-                        <div class="btn-group btn-group-justified" style="width:100%">
-                            <a href="#" class="btn btn-primary btn-user">Análise Simples</a>
-                            <a href="#" class="btn btn-primary btn-user">Comparar dois períodos</a>
-                            <a href="#" class="btn btn-primary btn-user">Comparar duas séries</a>
+                    <div>
+                        <h4>{{ year_water }}</h4>
+                        <div class="page-header">
+                            <form class="form-horizontal" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <fieldset>
+                                    {% for field in form %}
+                                        <div class="form-group">
+                                            <label for="{{ field.auto_id }}" class="col-md-9 control-label required">
+                                                {{ field.label }}
+                                            </label>
+                                            <div class="col-md-9">
+                                                <div class="related-widget-wrapper">
+                                                    {{ field|add_class:'form-control' }}
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    {% endfor %}
+                                </fieldset>
+                                <div class="col-5">
+                                    <button type="submit" class="btn btn-primary btn-user btn-block">Executar</button>
+                                </div>
+                            </form>
                         </div>
-                    </div>
-                    <div class="col-5">
-                        <button type="submit" class="btn btn-primary btn-user btn-block">Executar</button>
                     </div>
                 </div>
             </div>
