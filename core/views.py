@@ -53,14 +53,24 @@ class ResultStationView(CreateView):
             dic['Data'].append(i[1])
             dic[station].append(i[0])
         data_flow = pd.DataFrame(dic, index=dic['Data'], columns=[station])
-        flow = Flow(data=data_flow, source=station)
+        flow = Flow(data=data_flow, station=station)
+        fig_hydro, data_hydro = flow.hydrogram()
+        hydrogram = opy.plot(fig_hydro,  include_plotlyjs=True, output_type='div', auto_open=False)
 
-        data, fig = flow.hydrogram()
+        fig_hydro_by_year, data_hydro_by_year = flow.hydrogram_year()
+        hydro_by_year = opy.plot(fig_hydro_by_year, include_plotlyjs=True, output_type='div', auto_open=False)
 
-        hydrogram = opy.plot(data,  include_plotlyjs=True, output_type='div', auto_open=False)
+        month = flow.get_month_name()
 
         context = {"featureaction": featureaction,
-                   'hydrogram': hydrogram}
+                   'hydrogram': hydrogram,
+                   'hydro_by_year': hydro_by_year,
+                   'month': month,
+                   'mean': '{}'.format(flow.mean().values[0]),
+                   'q95': '{}'.format(flow.quantile(0.05).values[0]),
+                   'min': '{}'.format(flow.data.min().values[0]),
+                   'max': '{}'.format(flow.data.max().values[0])
+                   }
 
         return render(request, self.template_name, context)
 
