@@ -6,16 +6,17 @@
 {% load static %}
 {% block search %}
     <!-- Topbar Search -->
-  <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-    <div class="input-group">
-      <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
-      <div class="input-group-append">
-        <button class="btn btn-primary" type="button">
-          <i class="fas fa-search fa-sm"></i>
-        </button>
-      </div>
-    </div>
-  </form>
+    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+        <div class="input-group">
+            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
+                   aria-label="Search" aria-describedby="basic-addon2">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="button">
+                    <i class="fas fa-search fa-sm"></i>
+                </button>
+            </div>
+        </div>
+    </form>
 {% endblock %}
 
 {% block container %}
@@ -29,7 +30,10 @@
 
     <div id="mapid">
         <style>
-        .leaflet-container {width: 100%; height: 600px}
+            .leaflet-container {
+                width: 100%;
+                height: 600px
+            }
         </style>
         <script type="text/javascript">
             function map_init(map, options) {
@@ -38,7 +42,7 @@
                     var lat = "{{ sampling.featuregeometrywkt.x }}";
                     var lon = "{{ sampling.featuregeometrywkt.y }}";
                     // zoom to point & add it to map
-                    var name = '<h6 class="text-center">{{ sampling.samplingfeaturename }}</h6>'
+                    var name = '<h6><a class="m-0 font-weight-bold text-primary" href="{% url 'core:station_info' sampling.samplingfeaturecode %}">{{ sampling.samplingfeaturename }}</a></h6>'
                     var la = '<br>Lat: {{ sampling.featuregeometrywkt.x }}</br>'
                     var lo = '<br>Lon: {{ sampling.featuregeometrywkt.y }}</br>'
                     var iha = '<p><a class="m-0 font-weight-bold text-primary" href={% url 'iha:index' sampling.samplingfeaturecode %}>IHA</a></p>'
@@ -56,7 +60,7 @@
                             var method = method + ''
                         {% endif %}
                     {% endfor %}
-                    L.marker([lat, lon]).bindPopup(name+user+method+iha+la+lo).openPopup().addTo(map);
+                    L.marker([lat, lon]).bindPopup(name + user + method + iha + la + lo).openPopup().addTo(map);
                 {% endfor %}
             }
         </script>

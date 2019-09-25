@@ -61,15 +61,17 @@ class ResultStationView(CreateView):
         hydro_by_year = opy.plot(fig_hydro_by_year, include_plotlyjs=True, output_type='div', auto_open=False)
 
         month = flow.get_month_name()
+        q710 = flow.flow_min('q710')
 
         context = {"featureaction": featureaction,
                    'hydrogram': hydrogram,
                    'hydro_by_year': hydro_by_year,
                    'month': month,
-                   'mean': '{}'.format(flow.mean().values[0]),
-                   'q95': '{}'.format(flow.quantile(0.05).values[0]),
-                   'min': '{}'.format(flow.data.min().values[0]),
-                   'max': '{}'.format(flow.data.max().values[0])
+                   'mean': '{:.3f}'.format(flow.mean()[0]),
+                   'q95': '{:.3f}'.format(flow.quantile(0.05)[0]),
+                   'min': '{:.3f}'.format(flow.data.min().values[0]),
+                   'max': '{:.3f}'.format(flow.data.max().values[0]),
+                   'q710': '{:.3f}'.format(q710)
                    }
 
         return render(request, self.template_name, context)
@@ -134,8 +136,6 @@ class AddTimeResultsSeriesValuesView(LoginRequiredMixin, CreateView):
     def post(self, request, *args, **kwargs):
         post = request.POST
         file = request.FILES['File']
-        # dados = pd.read_csv(file, index_col=0, names=["Data", "XINGO"],
-        #                    parse_dates=True)
 
         sampling = Samplingfeatures.objects.get(samplingfeaturecode=kwargs['code'])
 
@@ -234,6 +234,23 @@ class AddVariablesView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('core:variable')
 
 
+class StationInfoView(CreateView):
+
+    template_name = 'station_info.html'
+
+    def get(self, request, *args, **kwargs):
+
+        station = Samplingfeatures.objects.get(samplingfeaturecode=kwargs['code'])
+        features = Featureactions.objects.filter(samplingfeatureid=station.samplingfeatureid)
+
+        context = {
+            'station': station,
+            'features': features,
+        }
+
+        return render(request, self.template_name, context=context)
+
+
 index = IndexView.as_view()
 result_station = ResultStationView.as_view()
 add_samplingfeatures = AddSamplingFeaturesView.as_view()
@@ -246,3 +263,4 @@ add_variable = AddVariablesView.as_view()
 add_action = AddActionView.as_view()
 add_method = AddMethodsView.as_view()
 add_organization = AddOrganizationsView.as_view()
+station_info = StationInfoView.as_view()

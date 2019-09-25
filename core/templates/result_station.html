@@ -5,168 +5,149 @@
 {% load static %}
 
 <body id="page-top">
-    <!-- Content Wrapper -->
-    <div id="content-wrapper" class="d-flex flex-column">
+<!-- Content Wrapper -->
+<div id="content-wrapper" class="d-flex flex-column">
 
-      <!-- Main Content -->
-      <div id="content">
+    <!-- Main Content -->
+    <div id="content">
 
         <!-- Begin Page Content -->
         {% block container %}
-          <!-- Page Heading -->
-          <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Estação: {{ featureaction.samplingfeatureid.samplingfeaturename }} -
-                {{ featureaction.action.method.methodname }}</h1>
-          </div>
-
-          <div class="row">
-            <!-- Area Chart -->
-            <div class="col-xl-12 col-lg-7">
-              <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                  <h6 class="m-0 font-weight-bold text-primary">Hidrograma</h6>
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                    {{ hydrogram|safe }}
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Content Row -->
-          <div class="row">
-            <!-- Content Column -->
-            <div class="col-lg-6 mb-4">
-
-              <!-- Project Card Example -->
-              <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">Hidrograma por ano</h6>
-                </div>
-                <div class="card-body">
-                    {{ hydro_by_year|safe }}
-                </div>
-              </div>
-
-              <!-- Color System -->
-              <div class="row">
-                <div class="col-lg-6 mb-4">
-                  <div class="card bg-primary text-white shadow">
-                      <div class="card-header py-3">
-                          <h6 class="m-0 font-weight-bold text-primary">Mês de início do ano hidrológico</h6>
-                      </div>
-                      <div class="card-body">
-                          <h4>{{ month }}</h4>
-                      </div>
-                  </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                  <div class="card bg-success text-white shadow">
-                      <div class="card-header py-3">
-                          <h6 class="m-0 font-weight-bold text-primary">Média</h6>
-                      </div>
-                      <div class="card-body">
-                          <h4>{{ mean }}</h4>
-                      </div>
-                  </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                  <div class="card bg-info text-white shadow">
-                      <div class="card-header py-3">
-                          <h6 class="m-0 font-weight-bold text-primary">Q95</h6>
-                      </div>
-                      <div class="card-body">
-                          <h4>{{ q95 }}</h4>
-                      </div>
-                  </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                  <div class="card bg-warning text-white shadow">
-                      <div class="card-header py-3">
-                          <h6 class="m-0 font-weight-bold text-primary">Máxima</h6>
-                      </div>
-                      <div class="card-body">
-                          <h4>{{ max }}</h4>
-                      </div>
-                  </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                  <div class="card bg-danger text-white shadow">
-                      <div class="card-header py-3">
-                          <h6 class="m-0 font-weight-bold text-primary">Mínima</h6>
-                      </div>
-                      <div class="card-body">
-                          <h4>{{ min }}</h4>
-                      </div>
-                  </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                  <div class="card bg-secondary text-white shadow">
-                      <div class="card-header py-3">
-                          <h6 class="m-0 font-weight-bold text-primary">Q7,10</h6>
-                      </div>
-                      <div class="card-body">
-                          <h4>{{ q710 }}</h4>
-                      </div>
-                  </div>
-                </div>
-              </div>
-
+            <!-- Page Heading -->
+            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                <h1 class="h3 mb-0 text-gray-800">Estação: {{ featureaction.samplingfeatureid.samplingfeaturename }} -
+                    {{ featureaction.action.method.methodname }}</h1>
             </div>
 
-            <div class="col-lg-6 mb-4">
-
-              <!-- Illustrations -->
-              <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">Illustrations</h6>
+            <div class="row">
+                <!-- Area Chart -->
+                <div class="col-xl-12 col-lg-7">
+                    <div class="card shadow mb-4">
+                        <!-- Card Header - Dropdown -->
+                        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                            <h6 class="m-0 font-weight-bold text-primary">Hidrograma</h6>
+                        </div>
+                        <!-- Card Body -->
+                        <div class="card-body">
+                            {{ hydrogram|safe }}
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                  <div class="text-center">
-                    <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;" src="{% static 'img/undraw_posting_photo.svg' %}" alt="">
-                  </div>
-                  <p>Add some quality, svg illustrations to your project courtesy of <a target="_blank" rel="nofollow" href="https://undraw.co/">unDraw</a>, a constantly updated collection of beautiful svg images that you can use completely free and without attribution!</p>
-                  <a target="_blank" rel="nofollow" href="https://undraw.co/">Browse Illustrations on unDraw &rarr;</a>
-                </div>
-              </div>
-
-              <!-- Approach -->
-              <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">Development Approach</h6>
-                </div>
-                <div class="card-body">
-                  <p>SB Admin 2 makes extensive use of Bootstrap 4 utility classes in order to reduce CSS bloat and poor page performance. Custom CSS classes are used to create custom components and custom utility classes.</p>
-                  <p class="mb-0">Before working with this theme, you should become familiar with the Bootstrap framework, especially the utility classes.</p>
-                </div>
-              </div>
-
             </div>
-          </div>
+            <!-- Content Row -->
+            <div class="row">
+                <!-- Content Column -->
+                <div class="row">
+                    <div class="col-lg-6 mb-4">
+                        <!-- Project Card Example -->
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Hidrograma por ano</h6>
+                            </div>
+                            <div class="card-body">
+                                {{ hydro_by_year|safe }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Hidrograma por ano</h6>
+                            </div>
+                            <div class="card-body">
+                                {{ hydro_by_year|safe }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Color System -->
+                <div class="row">
+                    <div class="col-lg-6 mb-4">
+                        <div class="card bg-primary text-white shadow">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Mês de início do ano hidrológico</h6>
+                            </div>
+                            <div class="card-body">
+                                <h4>{{ month }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <div class="card bg-success text-white shadow">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Média</h6>
+                            </div>
+                            <div class="card-body">
+                                <h4>{{ mean }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <div class="card bg-info text-white shadow">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Q95</h6>
+                            </div>
+                            <div class="card-body">
+                                <h4>{{ q95 }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <div class="card bg-warning text-white shadow">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Máxima</h6>
+                            </div>
+                            <div class="card-body">
+                                <h4>{{ max }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <div class="card bg-danger text-white shadow">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Mínima</h6>
+                            </div>
+                            <div class="card-body">
+                                <h4>{{ min }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <div class="card bg-secondary text-white shadow">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Q7,10</h6>
+                            </div>
+                            <div class="card-body">
+                                <h4>{{ q710 }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
         {% endblock %}
-        <!-- /.container-fluid -->
-      </div>
-      <!-- End of Main Content -->
+    <!-- /.container-fluid -->
+</div>
+<!-- End of Main Content -->
 
-      <!-- Footer -->
-      <footer class="sticky-footer bg-white">
-        <div class="container my-auto">
-          <div class="copyright text-center my-auto">
+<!-- Footer -->
+<footer class="sticky-footer bg-white">
+    <div class="container my-auto">
+        <div class="copyright text-center my-auto">
             <span>Copyright &copy; Your Website 2019</span>
-          </div>
         </div>
-      </footer>
-      <!-- End of Footer -->
     </div>
-    <!-- End of Content Wrapper -->
-  </div>
-  <!-- End of Page Wrapper -->
+</footer>
+<!-- End of Footer -->
+</div>
+<!-- End of Content Wrapper -->
+</div>
+<!-- End of Page Wrapper -->
 
-  <!-- Scroll to Top Button-->
-  <a class="scroll-to-top rounded" href="#page-top">
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
-  </a>
+</a>
 
 </body>
 

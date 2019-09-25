@@ -1,14 +1,13 @@
 from django.urls import path
 
-from core.views import add_variable
 from .views import (index, result_station, add_samplingfeatures, add_time_serie_values, add_units, add_time_serie_result, add_data_results,
-                    add_processing_level, add_action, add_method, add_organization)
+                    add_processing_level, add_action, add_method, add_organization, add_variable, station_info)
 
 app_name = 'core'
 
 urlpatterns = [
     path('', index, name='index'),
-    path('result_station/<code>', result_station, name='result_station'),
+    path('station/<code>/result', result_station, name='result_station'),
     path('station/add', add_samplingfeatures, name='station'),
     path('station/<code>/add_data', add_time_serie_values, name='add_values'),
     path('add_data', add_time_serie_values, name='add'),
@@ -19,5 +18,6 @@ urlpatterns = [
     path('action/add', add_action, name='action'),
     path('variable/add', add_variable, name='variable'),
     path('method/add', add_method, name='method'),
-    path('organization/add', add_organization, name='org')
+    path('organization/add', add_organization, name='org'),
+    path('station/<code>', station_info, name='station_info')
 ]
