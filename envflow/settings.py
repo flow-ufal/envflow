@@ -117,7 +117,7 @@ DATABASES = {
         'NAME': 'odm2',
         'USER': 'clebsonpy',
         'PASSWORD': '89635241',
-        'HOST': 'localhost',
+        'HOST': 'db',
         'PORT': '5432',
         'OPTIONS': {
             'options': '-c search_path=admin,odm2,odm2extra'

@@ -65,7 +65,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     profile_picture = models.ImageField(upload_to='profile_picture', null=True,
                                         blank=True, default='profile_picture/avatar.png')
-    people = models.OneToOneField(People, null=False, on_delete=models.CASCADE, related_name='profile')
+    people = models.OneToOneField(People, null=True, blank=True, on_delete=models.CASCADE, related_name='profile')
     email = models.EmailField('E-mail', unique=True)
     is_staff = models.BooleanField('Equipe', default=False)
     is_active = models.BooleanField('Ativo', default=True)
